@@ -495,9 +495,9 @@ def handle_mention(event, say):
 # FastAPI setup
 # --------------------
 handler = SlackRequestHandler(slack_app)
-api = FastAPI()
+app = FastAPI()
 
-@api.post("/slack/events")
+@app.post("/slack/events")
 async def slack_events(req: Request):
     body = await req.json()
 
