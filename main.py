@@ -451,11 +451,23 @@ COMMANDS = {
 }
 
 
+def get_last_synced():
+    """Fetch last sync times from the sync_metadata table."""
+    try:
+        result = supabase.table("sync_metadata").select("source, last_synced_ist").execute()
+        times = {r["source"]: r["last_synced_ist"] for r in result.data}
+        recs_time = times.get("recommendations", "never")
+        resp_time = times.get("responses", "never")
+        return f"\n\n_DB last updated — Recommendations: {recs_time} | Responses: {resp_time}_"
+    except Exception:
+        return ""
+
+
 def route_command(text):
     """Match text to a command and return the response string."""
     handler = COMMANDS.get(text)
     if handler:
-        return handler()
+        return handler() + get_last_synced()
     return HELP_TEXT
 
 
